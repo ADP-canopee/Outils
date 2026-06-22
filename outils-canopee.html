@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Outils numériques — Canopée</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="manifest" href="manifest-outils.json"/>
+  <link rel="apple-touch-icon" sizes="192x192" href="icons-outils/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Outils Canopée">
+  <meta name="theme-color" content="#004060">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --petrol:  #004060;
+      --petrol2: #005478;
+      --blue:    #2e75b6;
+      --cyan:    #0090B0;
+      --cyan3:   #D0EEF6;
+      --green:   #4A7828;
+      --green3:  #E4EFD8;
+      --sun:     #F5B14F;
+      --sun-pale:#FEEFD1;
+      --coral:   #E97551;
+      --purple:  #7B2D8B;
+      --purple-pale: #F5E8FB;
+      --bg:      #EEF4F7;
+      --white:   #ffffff;
+      --txt:     #002840;
+      --txt2:    #3A6070;
+      --txt3:    #6A9AAA;
+      --border:  #C8DCE6;
+    }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: var(--bg);
+      color: var(--txt);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--petrol);
+      padding: 32px 32px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .hdr-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .hdr-emblem {
+      width: 52px; height: 52px;
+      background: rgba(255,255,255,0.1);
+      border: 1.5px solid rgba(255,255,255,0.2);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+
+    .hdr-titles h1 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.1;
+    }
+
+    .hdr-titles p {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      margin-top: 3px;
+      letter-spacing: 0.04em;
+    }
+
+    .hdr-date {
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      font-weight: 500;
+      text-align: right;
+    }
+
+    /* ── MAIN ── */
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 36px 24px 80px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--txt3);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── GRILLE ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 14px;
+      margin-bottom: 48px;
+    }
+
+    /* ── CARTE ── */
+    .card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 22px 20px 18px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Bande colorée en haut */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--card-color);
+      opacity: 0.7;
+      transition: opacity 0.15s, height 0.15s;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 28px rgba(0,64,96,0.13);
+      border-color: var(--card-color);
+    }
+
+    .card:hover::before { opacity: 1; height: 4px; }
+
+    /* Couleurs */
+    .card[data-color="green"]  { --card-color: #4A7828; }
+    .card[data-color="cyan"]   { --card-color: #0090B0; }
+    .card[data-color="teal"]   { --card-color: #217586; }
+    .card[data-color="violet"] { --card-color: #7B2D8B; }
+    .card[data-color="orange"] { --card-color: #E97551; }
+    .card[data-color="blue"]   { --card-color: #2e75b6; }
+    .card[data-color="sun"]    { --card-color: #F5B14F; }
+
+    /* Icône */
+    .card-icon {
+      width: 48px; height: 48px;
+      border-radius: 13px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      background: color-mix(in srgb, var(--card-color) 12%, transparent);
+      flex-shrink: 0;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .card-tag {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--card-color);
+      background: color-mix(in srgb, var(--card-color) 10%, transparent);
+      border: 1px solid color-mix(in srgb, var(--card-color) 20%, transparent);
+      padding: 3px 9px;
+      border-radius: 100px;
+    }
+
+    .card h2 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--txt);
+      line-height: 1.25;
+    }
+
+    .card p {
+      font-size: 12.5px;
+      color: var(--txt2);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 2px;
+    }
+
+    /* Statut */
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot.live   { background: #4A7828; box-shadow: 0 0 0 3px rgba(74,120,40,0.15); }
+    .dot.local  { background: #2e75b6; box-shadow: 0 0 0 3px rgba(46,117,182,0.15); }
+    .dot.soon   { background: #C0D8E0; }
+
+    .status.live  { color: #4A7828; }
+    .status.local { color: #2e75b6; }
+    .status.soon  { color: var(--txt3); }
+
+    /* Flèche */
+    .arrow {
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+      color: var(--txt3);
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .card:hover .arrow {
+      background: var(--card-color);
+      border-color: var(--card-color);
+      color: white;
+    }
+
+    /* Carte désactivée */
+    .card.disabled {
+      opacity: 0.55;
+      pointer-events: none;
+      cursor: default;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 28px 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--txt3);
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 540px) {
+      header { padding: 24px 20px; }
+      main { padding: 28px 16px 60px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── BOUTON INSTALL PWA ── */
+    #pwa-install-btn {
+      display: none;
+      align-items: center;
+      gap: 7px;
+      background: var(--sun);
+      color: var(--petrol);
+      border: none;
+      border-radius: 100px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: 'Quicksand', sans-serif;
+      cursor: pointer;
+      white-space: nowrap;
+      box-shadow: 0 2px 10px rgba(245,177,79,.4);
+      transition: transform .15s, box-shadow .15s;
+    }
+    #pwa-install-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(245,177,79,.5); }
+    #pwa-install-btn.visible { display: flex; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-left">
+    <div class="hdr-emblem">🧰</div>
+    <div class="hdr-titles">
+      <h1>Outils numériques</h1>
+      <p>MECS Canopée · Association des Dames de la Providence</p>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+    <button id="pwa-install-btn">⬇ Installer</button>
+    <div class="hdr-date" id="hdr-date"></div>
+  </div>
+</header>
+
+<main>
+
+  <div class="section-title">Applications en ligne</div>
+  <div class="grid">
+
+    <!-- Générateur de menus -->
+    <a class="card" data-color="green"
+       href="https://adp-canopee.github.io/ADP-Menus/" target="_blank">
+      <div class="card-top">
+        <div class="card-icon">🍽️</div>
+        <span class="card-tag">PWA</span>
+      </div>
+      <h2>Générateur de menus</h2>
+      <p>Planification des menus hebdomadaires PNNS 4 pour toutes les unités.</p>
+      <div class="card-footer">
+        <div class="status live"><div class="dot live"></div> En ligne</div>
+        <div class="arrow">↗</div>
+      </div>
+    </a>
+
+    <!-- Commandes entretien -->
+    <a class="card" data-color="cyan"
+       href="https://adp-canopee.github.io/ADP-Stock/" target="_blank">
+      <div class="card-top">
+        <div class="card-icon">🧹</div>
+        <span class="card-tag">PWA</span>
+      </div>
+      <h2>Commandes — Entretien</h2>
+      <p>Gestion des commandes de produits d'entretien Nacqui-Hypro pour l'ensemble des bâtiments.</p>
+      <div class="card-footer">
+        <div class="status live"><div class="dot live"></div> En ligne</div>
+        <div class="arrow">↗</div>
+      </div>
+    </a>
+
+    <!-- Suivi RDV médicaux -->
+    <a class="card" data-color="violet"
+       href="https://adp-canopee.github.io/Suivi-Medical/" target="_blank">
+      <div class="card-top">
+        <div class="card-icon">🩺</div>
+        <span class="card-tag">PWA</span>
+      </div>
+      <h2>Suivi des RDV médicaux</h2>
+      <p>Planification et suivi des rendez-vous médicaux, connecté aux calendriers Outlook de chaque unité.</p>
+      <div class="card-footer">
+        <div class="status live"><div class="dot live"></div> En ligne</div>
+        <div class="arrow">↗</div>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="section-title">Applications locales</div>
+  <div class="grid">
+
+    <!-- Gestion des places -->
+    <a class="card" data-color="blue"
+       href="canopee_places.html" target="_blank">
+      <div class="card-top">
+        <div class="card-icon">🏠</div>
+        <span class="card-tag">Local</span>
+      </div>
+      <h2>Gestion des places Canopée</h2>
+      <p>Vue en temps réel des places disponibles et occupées dans toutes les unités d'hébergement.</p>
+      <div class="card-footer">
+        <div class="status local"><div class="dot local"></div> Réseau interne</div>
+        <div class="arrow">↗</div>
+      </div>
+    </a>
+
+  </div>
+
+</main>
+
+<footer>
+  © 2026 · MECS Canopée · ADP Marseille
+</footer>
+
+
+<script>
+// Date
+var d = new Date();
+var j = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'][d.getDay()];
+var m = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'][d.getMonth()];
+document.getElementById('hdr-date').textContent = j + ' ' + d.getDate() + ' ' + m + ' ' + d.getFullYear();
+</script>
+
+<script>
+// PWA Install
+var _dp = null;
+window.addEventListener('beforeinstallprompt', function(e) {
+  e.preventDefault(); _dp = e;
+  var btn = document.getElementById('pwa-install-btn');
+  if (btn) btn.classList.add('visible');
+});
+window.addEventListener('appinstalled', function() {
+  _dp = null;
+  var btn = document.getElementById('pwa-install-btn');
+  if (btn) btn.classList.remove('visible');
+});
+document.addEventListener('DOMContentLoaded', function() {
+  var btn = document.getElementById('pwa-install-btn');
+  if (!btn) return;
+  btn.addEventListener('click', function() {
+    if (_dp) {
+      _dp.prompt();
+      _dp.userChoice.then(function(r) {
+        if (r.outcome === 'accepted') btn.classList.remove('visible');
+        _dp = null;
+      });
+    } else {
+      var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+      if (isIOS) alert('Sur iPhone/iPad :\n1. Bouton Partager (carré avec flèche)\n2. "Sur l\'écran d\'accueil"');
+      else alert('Cliquez sur les 3 points du navigateur → "Installer l\'application"');
+    }
+  });
+});
+
+// Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('./sw-outils.js')
+      .then(function(r) { console.log('[PWA] SW Outils enregistré'); })
+      .catch(function(e) { console.warn('[PWA] SW échec', e); });
+  });
+}
+</script>
+
+
+</body>
+</html>
